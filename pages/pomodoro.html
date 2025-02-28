@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Flowza - Pomodoro Timer</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Flowza</h1>
+      <nav>
+        <ul>
+          <li><a href="../pages/home.html">Home</a></li>
+          <li><a href="../pages/library.html">Library</a></li>
+          <li><a href="../pages/now-playing.html">Now Playing</a></li>
+          <li><a href="../pages/pomodoro.html" class="active">Pomodoro</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="pomodoro">
+      <h2>Pomodoro Timer</h2>
+      <div id="timer">
+        <p id="timer-display">25:00</p>
+        <button id="start-timer" onclick="startPomodoro()">Start Pomodoro</button>
+        <div id="pomodoro-progress"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../js/pomodoro.js"></script>
+  <script src="../js/navigation.js"></script>
+</body>
+</html>

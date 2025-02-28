@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Flowza - Now Playing</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://www.youtube.com/iframe_api"></script> <!-- YouTube Iframe API -->
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Flowza</h1>
+      <nav>
+        <ul>
+          <li><a href="../pages/home.html">Home</a></li>
+          <li><a href="../pages/library.html">Library</a></li>
+          <li><a href="../pages/now-playing.html" class="active">Now Playing</a></li>
+          <li><a href="../pages/pomodoro.html">Pomodoro</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="now-playing">
+      <h2>Now Playing</h2>
+      <div id="player-container" style="display:none;">
+        <div id="player"></div> <!-- YouTube iframe player will be inserted here -->
+      </div>
+      <div id="now-playing-info">
+        <h3 id="track-name">Track: </h3>
+        <p id="artist-name">Artist: </p>
+        <button id="playPauseBtn" onclick="togglePlayPause()">Play</button>
+        <label for="volumeControl">Volume:</label>
+        <input type="range" id="volumeControl" min="0" max="100" value="100" />
+      </div>
+    </section>
+  </div>
+
+  <script src="../js/music.js"></script>
+  <script src="../js/navigation.js"></script>
+
+  <script>
+    let player;
+    let currentState = null; // Keep track of the current state (play/pause)
+    let currentStreamId = new URLSearchParams(window.location.search).get('streamId'); // Get streamId from URL
+
+    // This function creates an <iframe> (and YouTube player) after the API code downloads.
+    function onYouTubeIframeAPIReady() {
+      const videoId = getStreamId(currentStreamId);
+
+      // If player exists, destroy it before creating a new one
+      if (player) {
+        player.destroy();
+      }
+
+      // Initialize YouTube player
+      player = new YT.Player('player', {
+        height: '315',
+        width: '100%',
+        videoId: videoId,
+        playerVars: {
+          'mute': 0, // Ensure the video is not muted
+          'autoplay': 1, // Autoplay when player is ready
+          'controls': 0, // Hide controls since we are managing play/pause manually
+          'iv_load_policy': 3, // Hide video annotations
+          'modestbranding': 1, // Hide YouTube branding
+          'rel': 0, // Don't show related videos at the end
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // Get the video ID based on the streamId
+    function getStreamId(streamId) {
+      switch (streamId) {
+        case '1': return 'jfKfPfyJRdk'; // Lo-Fi Beats
+        case '2': return 'HuFYqnbVbzY'; // Chill Music
+        case '3': return '28KRPhVzCus'; // Classical Music
+        default: return 'jfKfPfyJRdk'; // Default to Lo-Fi Beats
+      }
+    }
+
+    // Called when the YouTube player is ready
+    function onPlayerReady(event) {
+      document.getElementById('track-name').textContent = "Track: Stream " + currentStreamId;
+      document.getElementById('artist-name').textContent = "Artist: Anonymous"; // Static or dynamic
+      document.getElementById('player-container').style.display = 'block';
+    }
+
+    // Called when the YouTube player state changes
+    function onPlayerStateChange(event) {
+      const playPauseButton = document.getElementById('playPauseBtn');
+      if (event.data == YT.PlayerState.PLAYING) {
+        currentState = 'playing';
+        playPauseButton.textContent = "Pause";
+      } else if (event.data == YT.PlayerState.PAUSED) {
+        currentState = 'paused';
+        playPauseButton.textContent = "Play";
+      } else if (event.data == YT.PlayerState.ENDED) {
+        currentState = 'ended';
+        playPauseButton.textContent = "Play";
+      }
+    }
+
+    // Toggle between play and pause
+    function togglePlayPause() {
+      const playPauseButton = document.getElementById('playPauseBtn');
+      if (currentState === 'playing') {
+        player.pauseVideo();
+        currentState = 'paused';
+        playPauseButton.textContent = "Play";
+      } else if (currentState === 'paused' || currentState === 'ended') {
+        player.playVideo();
+        currentState = 'playing';
+        playPauseButton.textContent = "Pause";
+      }
+    }
+
+    // Volume Control
+    document.getElementById('volumeControl').addEventListener('input', function(e) {
+      const volume = e.target.value / 100;
+      player.setVolume(volume * 100); // Set volume (0-100)
+    });
+
+    // Clean up player on page unload to avoid memory issues
+    window.onbeforeunload = function() {
+      if (player) {
+        player.destroy();
+      }
+    };
+  </script>
+</body>
+</html>
