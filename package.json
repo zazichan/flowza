@@ -1,0 +1,24 @@
+{
+  "name": "flowza",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zazichan/flowza.git"
+  },
+  "keywords": [],
+  "author": "Aljaz Zidanik",
+  "license": "Proprietary",
+  "bugs": {
+    "url": "https://github.com/zazichan/flowza/issues"
+  },
+  "homepage": "https://github.com/zazichan/flowza#readme",
+  "description": "",
+  "devDependencies": {
+    "electron": "^34.3.0"
+  }
+}
