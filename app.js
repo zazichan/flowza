@@ -18,8 +18,11 @@ const audio = new Audio('sounds/alert.mp3');
 const pages = {
     home: 'home-content.html',
     library: 'library-content.html',
-    pomodoro: 'pomodoro-content.html'
+    pomodoro: 'pomodoro-content.html',
+    settings: 'settings-content.html'
 };
+
+const YT_PLAYER_ID = 'youtube-player';
 
 function runTimer() {
     if (pomodoroState.running) {
@@ -42,11 +45,23 @@ function handleTimerCompletion() {
 setInterval(runTimer, 1000);
 
 document.addEventListener('DOMContentLoaded', () => {
+    loadYouTubeAPI();
     loadPage('home');
     setupNavigation();
     setupPlayerControls();
     audio.volume = pomodoroState.alertVolume;
 });
+
+// Dark/Light Mode
+document.getElementById('toggle-dark-mode').addEventListener('click', async () => {
+    const isDarkMode = await window.darkMode.toggle()
+    document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
+  })
+  
+  document.getElementById('reset-to-system').addEventListener('click', async () => {
+    await window.darkMode.system()
+    document.getElementById('theme-source').innerHTML = 'System'
+  })
 
 async function loadPage(page) {
     const response = await fetch(pages[page]);
@@ -66,24 +81,26 @@ function setupNavigation() {
 }
 
 function setupPlayerControls() {
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
-
-    playPauseBtn?.addEventListener('click', () => {
-        if (player) {
-            if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-                player.pauseVideo();
-                playPauseBtn.textContent = 'Play';
-            } else {
-                player.playVideo();
-                playPauseBtn.textContent = 'Pause';
-            }
+    document.getElementById('playPauseBtn')?.addEventListener('click', () => {
+        if (!player) return;
+        
+        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+        } else {
+            player.playVideo();
         }
     });
 
-    volumeSlider?.addEventListener('input', (e) => {
+    document.getElementById('volumeSlider')?.addEventListener('input', (e) => {
         if (player) player.setVolume(e.target.value * 100);
     });
+}
+
+function loadYouTubeAPI() {
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
 function setupPageSpecificLogic(page) {
@@ -92,20 +109,64 @@ function setupPageSpecificLogic(page) {
 
 function setupLibrary() {
     document.querySelectorAll('.song-item').forEach(item => {
-        item.addEventListener('click', async () => {
-            const iframe = item.querySelector('iframe');
-            const videoUrl = iframe.src;
-            
-            if (currentSong !== videoUrl) {
-                currentSong = videoUrl;
-                if (player) player.destroy();
+        item.addEventListener('click', () => {
+            const videoId = item.dataset.videoId;
+            const title = item.querySelector('span').textContent;
+            const art = item.querySelector('img').src;
+
+            if (currentSong !== videoId) {
+                currentSong = videoId;
                 
-                const videoId = new URL(videoUrl).pathname.split('/').pop();
-                initializePlayer(videoId);
+                // Update player footer
+                document.getElementById('now-playing-art').src = art;
+                document.getElementById('now-playing-title').textContent = title;
+                document.getElementById('player-footer').style.display = 'flex';
+
+                // Initialize or reload player
+                if (player) {
+                    player.destroy();
+                    document.getElementById(YT_PLAYER_ID).remove();
+                }
+
+                createYouTubePlayer(videoId);
             }
         });
     });
 }
+
+// Add this new function
+function createYouTubePlayer(videoId) {
+    const playerContainer = document.createElement('div');
+    playerContainer.id = YT_PLAYER_ID;
+    document.body.appendChild(playerContainer);
+
+    player = new YT.Player(YT_PLAYER_ID, {
+        height: '0',
+        width: '0',
+        videoId: videoId,
+        playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'disablekb': 1,
+            'modestbranding': 1
+        },
+        events: {
+            'onReady': (event) => {
+                event.target.setVolume(100);
+                document.getElementById('playPauseBtn').textContent = 'Pause';
+            },
+            'onStateChange': (event) => {
+                const btn = document.getElementById('playPauseBtn');
+                if (event.data === YT.PlayerState.PLAYING) {
+                    btn.textContent = 'Pause';
+                } else {
+                    btn.textContent = 'Play';
+                }
+            }
+        }
+    });
+}
+
 
 function initializePlayer(videoId) {
     player = new YT.Player('player', {
@@ -120,12 +181,20 @@ function initializePlayer(videoId) {
             'modestbranding': 1,
             'showinfo': 0
         },
-        events: {
-            'onReady': (event) => {
-                event.target.setVolume(100);
-                document.getElementById('player-footer').style.display = 'block';
-            }
+      events: {
+        'onReady': (event) => {
+          event.target.setVolume(100);
+          document.getElementById('player-footer').style.display = 'flex';
+        },
+        'onStateChange': (event) => {
+          const playPauseBtn = document.getElementById('playPauseBtn');
+          if (event.data === YT.PlayerState.PLAYING) {
+            playPauseBtn.textContent = 'Pause';
+          } else {
+            playPauseBtn.textContent = 'Play';
+          }
         }
+      }
     });
 }
 
@@ -244,7 +313,7 @@ function updatePomodoroDisplay() {
         document.getElementById('time').textContent = 
             `${minutes}:${seconds.toString().padStart(2, '0')}`;
         document.getElementById('pomodoroCount').textContent = 
-            `Pomodoros completed: ${pomodoroState.pomodoroCount}`;
+            `Completed: ${pomodoroState.pomodoroCount}`;
     }
 }
 

@@ -1,9 +1,51 @@
+:root {
+  /* Dark Mode Defaults */
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --primary-bg: #2a2a2a;
+  --secondary-bg: #333;
+  --hover-bg: #3a3a3a;
+  --accent-color: #4CAF50;
+  --border-color: #444;
+  --secondary-text: #888;
+  --button-bg: #444;
+  --shadow-color: rgba(0,0,0,0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --primary-bg: #2a2a2a;
+    --secondary-bg: #333;
+    --hover-bg: #3a3a3a;
+    --border-color: #444;
+    --secondary-text: #888;
+    --button-bg: #444;
+    --shadow-color: rgba(0,0,0,0.3);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #eeeeee;
+    --text-color: #333333;
+    --primary-bg: #ffffff;
+    --secondary-bg: #f5f5f5;
+    --hover-bg: #e0e0e0;
+    --border-color: #ddd;
+    --secondary-text: #666;
+    --button-bg: #e0e0e0;
+    --shadow-color: rgba(0,0,0,0.1);
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
-  background-color: #1a1a1a;
-  color: #ffffff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -12,14 +54,14 @@ body {
 
 nav {
   padding: 15px;
-  background-color: #2a2a2a;
+  background-color: var(--primary-bg);
   display: flex;
   gap: 15px;
   justify-content: center;
 }
 
 nav a {
-  color: #fff;
+  color: var(--text-color);
   text-decoration: none;
   padding: 8px 15px;
   border-radius: 5px;
@@ -27,7 +69,7 @@ nav a {
 }
 
 nav a:hover {
-  background-color: #3a3a3a;
+  background-color: var(--hover-bg);
 }
 
 #content-container {
@@ -37,13 +79,41 @@ nav a:hover {
 }
 
 #player-footer {
-  background-color: #2a2a2a;
-  padding: 15px;
+  background-color: var(--primary-bg);
+  padding: 10px 20px;
   position: sticky;
   bottom: 0;
   display: none;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   gap: 20px;
+}
+
+.now-playing {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 200px;
+}
+
+#now-playing-art {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+#now-playing-title {
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-grow: 1;
+  max-width: 300px;
 }
 
 #player {
@@ -52,70 +122,70 @@ nav a:hover {
 
 /* Pomodoro Styles */
 .timer {
-  margin: 80px 0 40px;
+  margin: -10px 0 0px;
   font-size: 3.5em;
 }
 
 .timer-buttons {
-  margin: 25px 0;
+  margin: 0px 0 0px;
   display: flex;
   justify-content: center;
   gap: 15px;
 }
 
 #startTimer, #resetTimer {
-  padding: 10px 25px;
-  font-size: 1em;
+  padding: 5px 15px;
+  font-size: 0.4em;
   border-radius: 6px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
 }
 
 .preset-grid-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0px;
 }
 
 .preset-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .preset-btn {
   padding: 20px;
-  background-color: #333;
-  border: 2px solid #444;
+  background-color: var(--secondary-bg);
+  border: 2px solid var(--border-color);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .preset-btn:hover {
-  background-color: #3a3a3a;
+  background-color: var(--hover-bg);
   transform: translateY(-2px);
 }
 
 .preset-btn.active {
-  border-color: #4CAF50;
-  background-color: #2d2d2d;
+  border-color: var(--accent-color);
+  background-color: var(--primary-bg);
 }
 
 .preset-btn h3 {
   margin: 0 0 8px 0;
-  color: #4CAF50;
+  color: var(--accent-color);
   font-size: 1.1em;
 }
 
 .preset-btn div {
-  color: #888;
+  color: var(--secondary-text);
   font-size: 0.9em;
 }
 
 .center-preset {
   grid-column: 1 / -1;
-  margin: 0 auto;
-  width: 200px;
 }
 
 /* Settings Styles */
@@ -131,9 +201,9 @@ nav a:hover {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #444;
+  background-color: var(--button-bg);
   border: none;
-  color: white;
+  color: var(--text-color);
   cursor: pointer;
   font-size: 1.2em;
   display: flex;
@@ -146,11 +216,11 @@ nav a:hover {
   position: absolute;
   top: 50px;
   right: 0;
-  background-color: #2a2a2a;
+  background-color: var(--primary-bg);
   min-width: 280px;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .settings-content.show {
@@ -164,15 +234,15 @@ nav a:hover {
 .setting-item label {
   display: block;
   margin-bottom: 10px;
-  color: #ccc;
+  color: var(--secondary-text);
 }
 
 input[type="number"] {
   width: 70px;
   padding: 8px;
-  background-color: #444;
-  color: white;
-  border: 1px solid #555;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   margin-left: 10px;
 }
@@ -191,9 +261,9 @@ input[type="number"] {
 }
 
 .counter {
-  margin-top: 20px;
-  color: #888;
-  font-size: 1em;
+  margin: 0px 0 15px;
+  color: var(--secondary-text);
+  font-size: 0.5em;
 }
 
 /* Library Page */
@@ -207,14 +277,14 @@ input[type="number"] {
 
 .song-item {
   padding: 15px;
-  background-color: #333;
+  background-color: var(--secondary-bg);
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .song-item:hover {
-  background-color: #3a3a3a;
+  background-color: var(--hover-bg);
 }
 
 @media (max-width: 768px) {
@@ -226,4 +296,43 @@ input[type="number"] {
       font-size: 2.5em;
       margin: 50px 0 30px;
   }
+}
+
+/* Library Page Styles */
+.song-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.song-item {
+  background-color: var(--primary-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid var(--border-color);
+}
+
+.song-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.song-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.song-item span {
+  display: block;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 500;
 }
