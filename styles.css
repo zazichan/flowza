@@ -63,26 +63,6 @@ nav a:hover {
   gap: 15px;
 }
 
-.timer-btn {
-  padding: 20px;
-  background-color: #333;
-  border: 2px solid #444;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.timer-btn:hover {
-  background-color: #3a3a3a;
-  transform: translateY(-2px);
-}
-
-.timer-btn h3 {
-  margin: 0 0 8px 0;
-  color: #4CAF50;
-  font-size: 1.1em;
-}
-
 #startTimer, #resetTimer {
   padding: 10px 25px;
   font-size: 1em;
@@ -134,12 +114,8 @@ nav a:hover {
 
 .center-preset {
   grid-column: 1 / -1;
-  padding: 20px;
-  background-color: #333;
-  border: 2px solid #444;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
+  margin: 0 auto;
+  width: 200px;
 }
 
 /* Settings Styles */

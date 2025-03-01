@@ -138,9 +138,9 @@ function setupPomodoroUI() {
         focus: { work: 60, short: 5, long: 30, intervals: 3 },
         ultra: { work: 90, short: 15, long: 30, intervals: 3 },
         custom: { 
-            work: pomodoroState.customWork, 
-            short: pomodoroState.customShort, 
-            long: pomodoroState.customLong, 
+            get work() { return pomodoroState.customWork }, 
+            get short() { return pomodoroState.customShort }, 
+            get long() { return pomodoroState.customLong }, 
             intervals: 4 
         }
     };
@@ -180,24 +180,26 @@ function setupPomodoroUI() {
             pomodoroState.preset = preset;
             document.querySelector('.preset-btn.active').classList.remove('active');
             btn.classList.add('active');
-            document.getElementById('customControls').style.display = 
-                preset === 'custom' ? 'block' : 'none';
-            loadPreset();
+            loadPreset()
         });
     });
 
-    customWork.addEventListener('change', (e) => {
-        pomodoroState.customWork = Math.max(15, Math.min(120, parseInt(e.target.value) || 25));
+    // Real-time custom input handling
+    customWork.addEventListener('input', (e) => {
+        const value = Math.abs(parseInt(e.target.value)) || 1;
+        pomodoroState.customWork = value;
         if(pomodoroState.preset === 'custom') loadPreset();
     });
     
-    customShort.addEventListener('change', (e) => {
-        pomodoroState.customShort = Math.max(1, Math.min(30, parseInt(e.target.value) || 5));
+    customShort.addEventListener('input', (e) => {
+        const value = Math.abs(parseInt(e.target.value)) || 1;
+        pomodoroState.customShort = value;
         if(pomodoroState.preset === 'custom') loadPreset();
     });
     
-    customLong.addEventListener('change', (e) => {
-        pomodoroState.customLong = Math.max(5, Math.min(60, parseInt(e.target.value) || 15));
+    customLong.addEventListener('input', (e) => {
+        const value = Math.abs(parseInt(e.target.value)) || 1;
+        pomodoroState.customLong = value;
         if(pomodoroState.preset === 'custom') loadPreset();
     });
 
@@ -222,11 +224,14 @@ function setupPomodoroUI() {
 
     function loadPreset() {
         const preset = presets[pomodoroState.preset];
+        
+        // Always use fresh custom values when selecting custom preset
         if(pomodoroState.preset === 'custom') {
             preset.work = pomodoroState.customWork;
             preset.short = pomodoroState.customShort;
             preset.long = pomodoroState.customLong;
         }
+        
         pomodoroState.timeLeft = preset.work * 60;
         updatePomodoroDisplay();
     }
