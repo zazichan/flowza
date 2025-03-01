@@ -24,6 +24,43 @@ const pages = {
 
 const YT_PLAYER_ID = 'youtube-player';
 
+// Theme handling functions
+function updateTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const themeSource = document.getElementById('theme-source');
+    if(themeSource) {
+        themeSource.textContent = 
+            theme === 'system' ? 'System' : theme.charAt(0).toUpperCase() + theme.slice(1);
+    }
+}
+
+async function initializeTheme() {
+    const theme = await window.electronAPI.getInitialTheme();
+    updateTheme(theme);
+    if (document.getElementById('theme-select')) {
+        document.getElementById('theme-select').value = theme;
+    }
+}
+
+function setupThemeListeners() {
+    const themeSelect = document.getElementById('theme-select');
+    if (themeSelect) {
+        themeSelect.addEventListener('change', (e) => {
+            const newTheme = e.target.value;
+            updateTheme(newTheme);
+            window.electronAPI.setTheme(newTheme);
+        });
+    }
+}
+
+// Updated theme handling
+window.electronAPI.onThemeUpdate((theme) => {
+    updateTheme(theme);
+    if (document.getElementById('theme-select')) {
+        document.getElementById('theme-select').value = theme;
+    }
+});
+
 function runTimer() {
     if (pomodoroState.running) {
         pomodoroState.timeLeft--;
@@ -50,33 +87,41 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavigation();
     setupPlayerControls();
     audio.volume = pomodoroState.alertVolume;
+    initializeTheme(); // Initialize theme properly
 });
 
-// Dark/Light Mode
-document.getElementById('toggle-dark-mode').addEventListener('click', async () => {
-    const isDarkMode = await window.darkMode.toggle()
-    document.getElementById('theme-source').innerHTML = isDarkMode ? 'Dark' : 'Light'
-  })
-  
-  document.getElementById('reset-to-system').addEventListener('click', async () => {
-    await window.darkMode.system()
-    document.getElementById('theme-source').innerHTML = 'System'
-  })
-
 async function loadPage(page) {
-    const response = await fetch(pages[page]);
-    const content = await response.text();
-    document.getElementById('content-container').innerHTML = content;
-    setupPageSpecificLogic(page);
-    if (page === 'pomodoro') setupPomodoroUI();
+    try {
+        const response = await fetch(pages[page]);
+        const content = await response.text();
+        document.getElementById('content-container').innerHTML = content;
+        
+        if (page === 'settings') {
+            // Initialize theme selector
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect) {
+                window.electronAPI.getInitialTheme().then(theme => {
+                    themeSelect.value = theme;
+                });
+            }
+            setupThemeListeners();
+        }
+        
+        if (page === 'pomodoro') setupPomodoroUI();
+        if (page === 'library') setupLibrary();
+    } catch (error) {
+        console.error('Page load error:', error);
+    }
 }
 
+// Update the navigation setup
 function setupNavigation() {
-    document.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', (e) => {
+    document.querySelector('nav').addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
             e.preventDefault();
-            loadPage(e.target.dataset.page);
-        });
+            const page = e.target.dataset.page;
+            loadPage(page);
+        }
     });
 }
 

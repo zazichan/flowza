@@ -1,18 +1,22 @@
-const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron/main')
+const { app, BrowserWindow, ipcMain, event } = require('electron/main')
 const path = require('node:path')
 
-// For hot reloading
 require("electron-reload")(path.join(__dirname), {
   electron: path.join(__dirname, "node_modules", ".bin", "electron"),
   ignored: /node_modules|[\/\\]\./,
 });
 
-function createWindow () {
+let currentTheme = 'system';
+
+const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 650,
+    frame: false,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true
     },
     autoHideMenuBar: true
   })
@@ -20,17 +24,22 @@ function createWindow () {
   win.loadFile('index.html')
 }
 
-ipcMain.handle('dark-mode:toggle', () => {
-  if (nativeTheme.shouldUseDarkColors) {
-    nativeTheme.themeSource = 'light'
-  } else {
-    nativeTheme.themeSource = 'dark'
-  }
-  return nativeTheme.shouldUseDarkColors
-})
+ipcMain.handle('get-initial-theme', () => {
+  return currentTheme;
+});
 
-ipcMain.handle('dark-mode:system', () => {
-  nativeTheme.themeSource = 'system'
+ipcMain.on('set-theme', (event, theme) => {
+  currentTheme = theme;
+  // Add persistent storage here if needed
+});
+
+ipcMain.on('window-control', (event, action) => {
+  const win = BrowserWindow.getFocusedWindow()
+  if (win) {
+      if (action === 'minimize') win.minimize()
+      if (action === 'maximize') win.isMaximized() ? win.unmaximize() : win.maximize()
+      if (action === 'close') win.close()
+  }
 })
 
 app.whenReady().then(() => {

@@ -53,7 +53,8 @@ body {
 }
 
 nav {
-  padding: 15px;
+  height: 35px; /* Set explicit height for nav */
+  padding-top: 35px;
   background-color: var(--primary-bg);
   display: flex;
   gap: 15px;
@@ -69,13 +70,14 @@ nav a {
 }
 
 nav a:hover {
-  background-color: var(--hover-bg);
+  text-decoration: underline;
 }
 
 #content-container {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  height: calc(100vh - 30px - 60px); /* Subtract title bar and nav heights */
 }
 
 #player-footer {
@@ -122,8 +124,14 @@ nav a:hover {
 
 /* Pomodoro Styles */
 .timer {
-  margin: -10px 0 0px;
+  margin: -5px auto 0px;
   font-size: 3.5em;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  background-color: var(--primary-bg);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 280px;
+  width: 50%;
 }
 
 .timer-buttons {
@@ -152,6 +160,7 @@ nav a:hover {
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin-top: 15px;
+  margin-bottom: -10px;
 }
 
 .preset-btn {
@@ -191,8 +200,8 @@ nav a:hover {
 /* Settings Styles */
 .settings-dropdown {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 80px;
+  right: 10px;
   z-index: 1000;
 }
 
@@ -335,4 +344,278 @@ input[type="number"] {
   text-align: center;
   font-size: 1.1em;
   font-weight: 500;
+}
+
+/* Theme toggle buttons */
+.theme-btn {
+  padding: 12px 20px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-btn:hover {
+  background-color: var(--hover-bg);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .light-hidden,
+[data-theme="light"] .dark-hidden {
+  display: none;
+}
+
+.theme-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: var(--secondary-bg);
+  border-radius: 10px;
+}
+
+/* Theme override system */
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --primary-bg: #2a2a2a;
+  --secondary-bg: #333;
+  --hover-bg: #3a3a3a;
+  --border-color: #444;
+  --secondary-text: #888;
+  --button-bg: #444;
+  --shadow-color: rgba(0,0,0,0.3);
+}
+
+[data-theme="light"] {
+  --bg-color: #eeeeee;
+  --text-color: #333333;
+  --primary-bg: #ffffff;
+  --secondary-bg: #f5f5f5;
+  --hover-bg: #e0e0e0;
+  --border-color: #ddd;
+  --secondary-text: #666;
+  --button-bg: #e0e0e0;
+  --shadow-color: rgba(0,0,0,0.1);
+}
+
+.settings-content {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.theme-controls {
+  background-color: var(--secondary-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.setting-item {
+  background-color: var(--secondary-bg);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+#customControls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#customControls label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--button-bg);
+  border-radius: 8px;
+}
+
+#customControls input[type="number"] {
+  width: 80px;
+  padding: 8px;
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+.error-message {
+  color: #ff4444;
+  padding: 20px;
+  text-align: center;
+  background-color: var(--secondary-bg);
+  border-radius: 10px;
+  margin: 20px;
+}
+
+/* Settings page */
+/* Settings Page Styles */
+.settings-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--text-color);
+}
+
+.settings-section {
+  background-color: var(--secondary-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.setting-item {
+  margin: 15px 0;
+}
+
+.input-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.btn {
+  padding: 10px 20px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--hover-bg);
+}
+
+.error {
+  color: #ff4444;
+  padding: 20px;
+  text-align: center;
+  background-color: var(--secondary-bg);
+  border-radius: 10px;
+  margin: 20px;
+}
+
+/* Ensure all sections have basic styling */
+.settings-content {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settings-content h1 {
+  color: var(--text-color);
+  margin-bottom: 30px;
+}
+
+.settings-section {
+  background-color: var(--secondary-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.input-group label {
+  margin-right: 15px;
+}
+
+/* Error message styling */
+.error {
+  color: #ff4444;
+  padding: 20px;
+  text-align: center;
+  background-color: var(--secondary-bg);
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.theme-dropdown {
+  padding: 8px 12px;
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  margin: 10px 0;
+  width: 200px;
+  width: 50%;
+  margin: auto;
+}
+
+.settings-section {
+  background-color: var(--secondary-bg);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.settings-section h2 {
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+.theme-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title-bar {
+  height: 30px;
+  background-color: var(--primary-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  -webkit-app-region: drag;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.window-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.window-control {
+  width: 46px;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 16px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.window-control:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Add padding to body to account for title bar */
+body {
+  padding-top: 0;
 }
