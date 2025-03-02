@@ -1,19 +1,22 @@
+/* --- Root Variables for Dark and Light Mode --- */
+
 :root {
   /* Dark Mode Defaults */
-  --bg-color: #1a1a1a;
-  --text-color: #ffffff;
-  --primary-bg: #2a2a2a;
-  --secondary-bg: #333;
-  --hover-bg: #3a3a3a;
-  --accent-color: #4CAF50;
-  --border-color: #444;
-  --secondary-text: #888;
-  --button-bg: #444;
-  --shadow-color: rgba(0,0,0,0.3);
+  --bg-color: #1a1a1a;             /* Background color for dark mode */
+  --text-color: #ffffff;            /* Text color for dark mode */
+  --primary-bg: #2a2a2a;            /* Primary background color for dark mode */
+  --secondary-bg: #333;             /* Secondary background color for dark mode */
+  --hover-bg: #3a3a3a;              /* Hover background color for dark mode */
+  --accent-color: #4CAF50;          /* Accent color for buttons or highlights */
+  --border-color: #444;             /* Border color */
+  --secondary-text: #888;           /* Secondary text color */
+  --button-bg: #444;                /* Button background color */
+  --shadow-color: rgba(0,0,0,0.3);  /* Shadow color for dark mode */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Dark mode theme specific colors (for systems that prefer dark mode) */
     --bg-color: #1a1a1a;
     --text-color: #ffffff;
     --primary-bg: #2a2a2a;
@@ -28,6 +31,7 @@
 
 @media (prefers-color-scheme: light) {
   :root {
+    /* Light mode theme specific colors (for systems that prefer light mode) */
     --bg-color: #eeeeee;
     --text-color: #333333;
     --primary-bg: #ffffff;
@@ -40,52 +44,60 @@
   }
 }
 
+/* --- Global Styles --- */
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  height: 100vh;
+  background-color: var(--bg-color); /* Apply background color based on the theme */
+  color: var(--text-color);          /* Apply text color based on the theme */
+  height: 100vh;                     /* Full height of the viewport */
   display: flex;
   flex-direction: column;
-  text-align: center;
+  text-align: center;                /* Center-align text */
 }
 
 nav {
-  height: 35px; /* Set explicit height for nav */
+  height: 35px;                      /* Set explicit height for navigation bar */
   padding-top: 35px;
-  background-color: var(--primary-bg);
+  background-color: var(--primary-bg); /* Apply primary background color for the nav */
   display: flex;
   gap: 15px;
-  justify-content: center;
+  justify-content: center;           /* Center the navigation links */
 }
 
 nav a {
-  color: var(--text-color);
-  text-decoration: none;
+  color: var(--text-color);          /* Text color for navigation links */
+  text-decoration: none;             /* Remove underline */
   padding: 8px 15px;
   border-radius: 5px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s; /* Smooth transition for hover effects */
 }
 
 nav a:hover {
-  text-decoration: underline;
+  text-decoration: underline;        /* Underline the link on hover */
 }
+
+.settings-button {
+  margin-left: 400px;
+}
+
+/* --- Main Content Area --- */
 
 #content-container {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
-  height: calc(100vh - 30px - 60px); /* Subtract title bar and nav heights */
+  overflow-y: auto;                  /* Allow vertical scrolling if content overflows */
+  height: calc(100vh - 30px - 60px);  /* Subtract title bar and nav heights */
 }
 
 #player-footer {
-  background-color: var(--primary-bg);
+  background-color: var(--primary-bg); /* Apply primary background color */
   padding: 10px 20px;
-  position: sticky;
+  position: sticky;                    /* Stick to the bottom of the page */
   bottom: 0;
-  display: none;
+  display: none;                       /* Initially hide the player footer */
   justify-content: space-between;
   align-items: center;
   gap: 20px;
@@ -119,14 +131,15 @@ nav a:hover {
 }
 
 #player {
-  display: none;
+  display: none; /* Hide player element by default */
 }
 
-/* Pomodoro Styles */
+/* --- Pomodoro Timer Styles --- */
+
 .timer {
   margin: -5px auto 0px;
   font-size: 3.5em;
-  box-shadow: 0 4px 8px var(--shadow-color);
+  box-shadow: 0 4px 8px var(--shadow-color); /* Apply shadow to timer */
   background-color: var(--primary-bg);
   padding: 20px;
   border-radius: 10px;
@@ -149,6 +162,8 @@ nav a:hover {
   color: var(--text-color);
 }
 
+/* --- Preset Button Styles --- */
+
 .preset-grid-container {
   max-width: 800px;
   margin: 0 auto;
@@ -157,7 +172,7 @@ nav a:hover {
 
 .preset-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 3 columns grid layout */
   gap: 15px;
   margin-top: 15px;
   margin-bottom: -10px;
@@ -169,12 +184,12 @@ nav a:hover {
   border: 2px solid var(--border-color);
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s; /* Smooth transition on hover */
 }
 
 .preset-btn:hover {
   background-color: var(--hover-bg);
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Slightly lift the button on hover */
 }
 
 .preset-btn.active {
@@ -194,10 +209,11 @@ nav a:hover {
 }
 
 .center-preset {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; /* Span across all columns */
 }
 
-/* Settings Styles */
+/* --- Settings Dropdown Styles --- */
+
 .settings-dropdown {
   position: fixed;
   top: 80px;
@@ -210,7 +226,7 @@ nav a:hover {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--button-bg);
+  background-color: transparent;
   border: none;
   color: var(--text-color);
   cursor: pointer;
@@ -218,6 +234,10 @@ nav a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.settings-btn:hover {
+background-color: var(--button-bg);
 }
 
 .settings-content {
@@ -233,7 +253,7 @@ nav a:hover {
 }
 
 .settings-content.show {
-  display: block;
+  display: block; /* Show settings when 'show' class is added */
 }
 
 .setting-item {
@@ -277,41 +297,9 @@ input[type="number"] {
 
 /* Library Page */
 .song-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.song-item {
-  padding: 15px;
-  background-color: var(--secondary-bg);
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.song-item:hover {
-  background-color: var(--hover-bg);
-}
-
-@media (max-width: 768px) {
-  .preset-grid {
-      grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .timer {
-      font-size: 2.5em;
-      margin: 50px 0 30px;
-  }
-}
-
-/* Library Page Styles */
-.song-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Use grid layout */
+  gap: 25px; /* Space between items */
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -346,7 +334,24 @@ input[type="number"] {
   font-weight: 500;
 }
 
-/* Theme toggle buttons */
+/* Library Page and other elements responsiveness: */
+@media (max-width: 768px) {
+  .song-list {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust for smaller screens */
+  }
+
+  .preset-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
+  }
+  
+  .timer {
+    font-size: 2.5em;
+    margin: 50px 0 30px;
+  }
+}
+
+/* --- Theme Button Styles --- */
+
 .theme-btn {
   padding: 12px 20px;
   background-color: var(--button-bg);
@@ -363,7 +368,7 @@ input[type="number"] {
 
 .theme-btn:hover {
   background-color: var(--hover-bg);
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Lift button on hover */
 }
 
 [data-theme="dark"] .light-hidden,
@@ -381,7 +386,8 @@ input[type="number"] {
   border-radius: 10px;
 }
 
-/* Theme override system */
+/* --- Theme Override System (Dark/Light Theme) --- */
+
 [data-theme="dark"] {
   --bg-color: #1a1a1a;
   --text-color: #ffffff;
@@ -406,49 +412,7 @@ input[type="number"] {
   --shadow-color: rgba(0,0,0,0.1);
 }
 
-.settings-content {
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.theme-controls {
-  background-color: var(--secondary-bg);
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-.setting-item {
-  background-color: var(--secondary-bg);
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
-
-#customControls {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-#customControls label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  background-color: var(--button-bg);
-  border-radius: 8px;
-}
-
-#customControls input[type="number"] {
-  width: 80px;
-  padding: 8px;
-  background-color: var(--primary-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-}
+/* --- Error Message Styles --- */
 
 .error-message {
   color: #ff4444;
@@ -459,8 +423,8 @@ input[type="number"] {
   margin: 20px;
 }
 
-/* Settings page */
-/* Settings Page Styles */
+/* --- Settings Page Styles --- */
+
 .settings-page {
   padding: 20px;
   max-width: 800px;
@@ -501,6 +465,7 @@ input[type="number"] {
   background-color: var(--hover-bg);
 }
 
+/* --- Error Message Styling --- */
 .error {
   color: #ff4444;
   padding: 20px;
@@ -510,45 +475,7 @@ input[type="number"] {
   margin: 20px;
 }
 
-/* Ensure all sections have basic styling */
-.settings-content {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.settings-content h1 {
-  color: var(--text-color);
-  margin-bottom: 30px;
-}
-
-.settings-section {
-  background-color: var(--secondary-bg);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.input-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 15px 0;
-}
-
-.input-group label {
-  margin-right: 15px;
-}
-
-/* Error message styling */
-.error {
-  color: #ff4444;
-  padding: 20px;
-  text-align: center;
-  background-color: var(--secondary-bg);
-  border-radius: 10px;
-  margin: 20px;
-}
+/* --- Theme Dropdown Styles --- */
 
 .theme-dropdown {
   padding: 8px 12px;
@@ -562,23 +489,7 @@ input[type="number"] {
   margin: auto;
 }
 
-.settings-section {
-  background-color: var(--secondary-bg);
-  padding: 20px;
-  border-radius: 10px;
-  margin: 20px 0;
-}
-
-.settings-section h2 {
-  margin-top: 0;
-  color: var(--text-color);
-}
-
-.theme-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+/* --- Title Bar Styles --- */
 
 .title-bar {
   height: 30px;
@@ -586,7 +497,7 @@ input[type="number"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  -webkit-app-region: drag;
+  -webkit-app-region: drag; /* Make the title bar draggable */
   position: fixed;
   top: 0;
   left: 0;
@@ -597,7 +508,7 @@ input[type="number"] {
 .window-controls {
   display: flex;
   height: 100%;
-  -webkit-app-region: no-drag;
+  -webkit-app-region: no-drag; /* Prevent dragging for window controls */
 }
 
 .window-control {
@@ -612,10 +523,11 @@ input[type="number"] {
 }
 
 .window-control:hover {
-  background-color: var(--hover-bg);
+  background-color: var(--hover-bg); /* Change background color on hover */
 }
 
-/* Add padding to body to account for title bar */
+/* --- Body Padding for Title Bar --- */
+
 body {
-  padding-top: 0;
+  padding-top: 0; /* Ensure that the body has no extra padding from the title bar */
 }
