@@ -1,4 +1,5 @@
 let player = null;
+let lastVolume = 100;
 let currentSong = null;
 let pomodoroState = {
     running: false,
@@ -19,7 +20,8 @@ const pages = {
     home: 'home-content.html',
     library: 'library-content.html',
     pomodoro: 'pomodoro-content.html',
-    settings: 'settings-content.html'
+    settings: 'settings-content.html',
+    playing: 'playing-content.html'
 };
 
 const YT_PLAYER_ID = 'youtube-player';
@@ -95,35 +97,69 @@ async function loadPage(page) {
         const response = await fetch(pages[page]);
         const content = await response.text();
         document.getElementById('content-container').innerHTML = content;
-        
-        if (page === 'settings') {
-            // Initialize theme selector
-            const themeSelect = document.getElementById('theme-select');
-            if (themeSelect) {
-                window.electronAPI.getInitialTheme().then(theme => {
-                    themeSelect.value = theme;
-                });
+
+        // Handle player visibility
+        const playerFooter = document.getElementById('player-footer');
+        if (page === 'playing') {
+            playerFooter.style.display = 'none'; // Hide footer on playing page
+            // Update expanded view with current song info
+            if (currentSong) {
+                const expandedArt = document.getElementById('expanded-art');
+                const expandedTitle = document.getElementById('expanded-title');
+                if (expandedArt) {
+                    expandedArt.src = currentSong.art;
+                    expandedArt.style.display = 'block'; // Show GIF/art
+                }
+                if (expandedTitle) expandedTitle.textContent = currentSong.title;
             }
-            setupThemeListeners();
+        } else {
+            // Show footer only if a song is playing
+            playerFooter.style.display = currentSong ? 'flex' : 'none';
+            // Hide expanded art when leaving playing page
+            const expandedArt = document.getElementById('expanded-art');
+            if (expandedArt) expandedArt.style.display = 'none';
         }
-        
+
+        // Keep YouTube player hidden at all times
+        const ytPlayerElement = document.getElementById(YT_PLAYER_ID);
+        if (ytPlayerElement) {
+            ytPlayerElement.style.width = '0';
+            ytPlayerElement.style.height = '0';
+        }
+
+        // Existing setup for other pages
+        if (page === 'settings') { /* ... */ }
         if (page === 'pomodoro') setupPomodoroUI();
         if (page === 'library') setupLibrary();
+        if (page === 'playing') setupPlayerControls();
     } catch (error) {
         console.error('Page load error:', error);
     }
 }
 
-// Update the navigation setup
 function setupNavigation() {
+    // Event listener for navigation links
     document.querySelector('nav').addEventListener('click', (e) => {
-        if (e.target.tagName === 'A') {
-            e.preventDefault();
+        // Check if the clicked element is a link and has a 'data-page' attribute
+        if (e.target.tagName === 'A' && e.target.dataset.page) {
+            e.preventDefault(); // Prevent the default anchor behavior
             const page = e.target.dataset.page;
             loadPage(page);
         }
     });
+
+    // Event listener for other clickable elements (like images or buttons)
+    document.querySelectorAll('[data-page]').forEach(element => {
+        element.addEventListener('click', (e) => {
+            const page = e.target.dataset.page;
+            if (page) {
+                e.preventDefault(); // Prevent default behavior (like link behavior for anchor)
+                loadPage(page);
+            }
+        });
+    });
 }
+
 
 function setupPlayerControls() {
     document.getElementById('playPauseBtn')?.addEventListener('click', () => {
@@ -137,9 +173,55 @@ function setupPlayerControls() {
     });
 
     document.getElementById('volumeSlider')?.addEventListener('input', (e) => {
-        if (player) player.setVolume(e.target.value * 100);
+        if (player) {
+            const volumeValue = e.target.value; // Get the slider value
+            lastVolume = volumeValue * 100; // Update the stored volume value
+        
+            player.setVolume(lastVolume); // Set the player's volume
+        }
     });
 }
+
+const volumeSlider = document.getElementById('volumeSlider');
+const volumePercentage = document.getElementById('volumePercentage');
+
+// Function to update the volume percentage text and its position
+function updateVolume() {
+  // Get the current volume value as a percentage
+  const volumeValue = Math.round(volumeSlider.value * 100);
+
+  // Update the volume percentage text
+  volumePercentage.textContent = `${volumeValue}`;
+
+  // Get the width of the slider and the thumb's position
+  const sliderRect = volumeSlider.getBoundingClientRect();
+  const thumbPosition = (volumeSlider.value - volumeSlider.min) / (volumeSlider.max - volumeSlider.min) * sliderRect.width;
+
+  // Position the volume percentage above the thumb
+  volumePercentage.style.left = `${thumbPosition + sliderRect.left}px`;
+}
+
+// Show the percentage when the user starts interacting with the slider
+volumeSlider.addEventListener('mousedown', function () {
+  volumePercentage.style.opacity = '1'; // Make the percentage visible
+});
+
+// Hide the percentage when the user stops interacting with the slider
+volumeSlider.addEventListener('mouseup', function () {
+  volumePercentage.style.opacity = '0'; // Make the percentage invisible
+});
+
+// Also hide the percentage when the mouse leaves the slider (optional)
+volumeSlider.addEventListener('mouseleave', function () {
+  volumePercentage.style.opacity = '0'; // Make the percentage invisible
+});
+
+// Initialize the position of the percentage when the page loads
+updateVolume();
+
+// Update the volume percentage position as the slider is being moved
+volumeSlider.addEventListener('input', updateVolume);
+
 
 function loadYouTubeAPI() {
     const tag = document.createElement('script');
@@ -158,31 +240,36 @@ function setupLibrary() {
             const videoId = item.dataset.videoId;
             const title = item.querySelector('span').textContent;
             const art = item.querySelector('img').src;
-
-            if (currentSong !== videoId) {
-                currentSong = videoId;
-                
+    
+            if (currentSong?.videoId !== videoId) {
+                currentSong = { videoId, title, art }; // Store as object
+    
                 // Update player footer
                 document.getElementById('now-playing-art').src = art;
                 document.getElementById('now-playing-title').textContent = title;
                 document.getElementById('player-footer').style.display = 'flex';
-
+    
                 // Initialize or reload player
                 if (player) {
                     player.destroy();
                     document.getElementById(YT_PLAYER_ID).remove();
                 }
-
+    
                 createYouTubePlayer(videoId);
             }
         });
     });
 }
 
-// Add this new function
 function createYouTubePlayer(videoId) {
+    if (document.getElementById(YT_PLAYER_ID)) {
+        document.getElementById(YT_PLAYER_ID).remove();
+    }
+
     const playerContainer = document.createElement('div');
     playerContainer.id = YT_PLAYER_ID;
+    playerContainer.style.position = 'absolute';
+    playerContainer.style.left = '-9999px'; // Move off-screen
     document.body.appendChild(playerContainer);
 
     player = new YT.Player(YT_PLAYER_ID, {
@@ -197,21 +284,20 @@ function createYouTubePlayer(videoId) {
         },
         events: {
             'onReady': (event) => {
-                event.target.setVolume(100);
-                document.getElementById('playPauseBtn').textContent = 'Pause';
+                event.target.setVolume(lastVolume); // Set to the previous volume
+                document.getElementById('playPauseIcon').src = 'images/icons/pause.png';
             },
             'onStateChange': (event) => {
-                const btn = document.getElementById('playPauseBtn');
+                const btnIcon = document.getElementById('playPauseIcon');
                 if (event.data === YT.PlayerState.PLAYING) {
-                    btn.textContent = 'Pause';
+                    btnIcon.src = 'images/icons/pause.png';
                 } else {
-                    btn.textContent = 'Play';
+                    btnIcon.src = 'images/icons/play.png';
                 }
             }
-        }
+        }        
     });
 }
-
 
 function initializePlayer(videoId) {
     player = new YT.Player('player', {

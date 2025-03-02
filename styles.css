@@ -59,15 +59,20 @@ body {
 }
 
 nav {
-  height: 35px;                      /* Set explicit height for navigation bar */
+  height: 10px;                      /* Set explicit height for navigation bar */
   padding-top: 35px;
-  background-color: var(--primary-bg); /* Apply primary background color for the nav */
+  background-color: var(--secondary-bg); /* Apply primary background color for the nav */
+  border-radius: 5px;
+  margin-top: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
   display: flex;
   gap: 15px;
   justify-content: center;           /* Center the navigation links */
 }
 
 nav a {
+  margin-top: -28px;
   color: var(--text-color);          /* Text color for navigation links */
   text-decoration: none;             /* Remove underline */
   padding: 8px 15px;
@@ -79,8 +84,37 @@ nav a:hover {
   text-decoration: underline;        /* Underline the link on hover */
 }
 
-.settings-button {
-  margin-left: 400px;
+.settings-bton {
+  margin-left: 580px;
+}
+
+.navi-link {
+  display: inline-block;
+  position: relative; /* For z-index control */
+  overflow: hidden; /* Contain the image */
+  line-height: 0; /* Remove phantom space under image */
+  width: 2px;
+  height: 12px;
+}
+
+.navi-thumbnail {
+  margin-left: -10px;
+  margin-top: -5px;
+  display: block;
+  width: 25px;
+  height: auto;
+  position: relative; /* Create stacking context */
+  z-index: 1; /* Ensure image stays below any pseudo-elements */
+}
+
+.navi-link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Place overlay above image */
 }
 
 /* --- Main Content Area --- */
@@ -118,6 +152,7 @@ nav a:hover {
 }
 
 #now-playing-title {
+  font-family: 'MyCustomFont', sans-serif;
   font-weight: 500;
   font-size: 0.9em;
 }
@@ -132,6 +167,253 @@ nav a:hover {
 
 #player {
   display: none; /* Hide player element by default */
+}
+
+.thumbnail-link {
+  display: inline-block;
+  position: relative; /* For z-index control */
+  overflow: hidden; /* Contain the image */
+  line-height: 0; /* Remove phantom space under image */
+}
+
+.thumbnail {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative; /* Create stacking context */
+  z-index: 1; /* Ensure image stays below any pseudo-elements */
+}
+
+/* Optional: Visual feedback overlay */
+.thumbnail-link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Place overlay above image */
+}
+
+/* Controls container */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-color); /* Dark gray background */
+  padding: 10px 15px;
+  border-radius: 8px;
+  width: fit-content;
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+/* Play/Pause Button */
+#playPauseBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: 0.3s ease;
+  margin-top: 3px;
+}
+
+#playPauseBtn img {
+  width: 15px; /* Adjust the size of the icons */
+  height: 15px;
+  transition: 0.2s ease;
+}
+
+#playPauseBtn:hover img {
+  opacity: 0.8;
+}
+
+/* Volume Slider */
+.volumeSlider {
+  appearance: none;
+  width: 120px;
+  height: 6px;
+  background: var(--primary-bg);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.volumeSlider:hover {
+  background: var(--secondary-bg);
+}
+
+/* Custom slider thumb */
+.volumeSlider::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--text-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px var(--shadow-color);
+}
+
+.volumeSlider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--text-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Volume percentage */
+.volume-percentage {
+  position: absolute;
+  text-align: center;
+  top: 0px; /* Adjust this to control how far above the thumb */
+  font-size: 14px;
+  font-family: 'MyCustomFont', sans-serif;
+  border-radius: 10%;
+  padding-top: 2px;
+  width: 40px;
+  height: 20px;
+  background: var(--text-color);
+  color: var(--bg-color);
+  transform: translateX(-50%); /* Center the percentage above the thumb */
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.1s ease-out;
+}
+
+/* Expanded Player Container */
+.expanded-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 40px 20px;
+  height: calc(100vh - 250px); /* Adjust based on your title bar height */
+}
+
+/* Album Art/GIF Display */
+.expanded-art {
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 15px var(--shadow-color);
+  border: 2px solid var(--border-color);
+}
+
+/* Track Title */
+.expanded-title {
+  font-family: 'MyCustomFont', sans-serif;
+  font-size: 1.4em;
+  color: var(--text-color);
+  text-align: center;
+  margin: 0;
+  max-width: 80%;
+}
+
+/* Controls Container (matches footer exactly) */
+.player-controls .controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--primary-bg);
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px var(--shadow-color);
+  width: fit-content;
+}
+
+/* Play/Pause Button (scaled up) */
+.player-controls #playPauseBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.player-controls #playPauseBtn img {
+  width: 24px; /* 60% larger than footer's 15px */
+  height: 24px;
+}
+
+/* Volume Slider (matches footer style) */
+.player-controls .volumeSlider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 150px; /* Slightly wider than footer */
+  height: 6px;
+  background: var(--secondary-bg);
+  border-radius: 3px;
+  margin: 0 10px;
+}
+
+.player-controls .volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--text-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px var(--shadow-color);
+}
+
+/* Volume Percentage (matches footer positioning) */
+.player-controls .volume-percentage {
+  position: absolute;
+  top: -24px;
+  font-size: 0.8em;
+  background: var(--text-color);
+  color: var(--bg-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.player-controls .volumeSlider:hover + .volume-percentage {
+  opacity: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .expanded-art {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .expanded-title {
+    font-size: 1.2em;
+  }
+  
+  .player-controls .controls {
+    padding: 10px 15px;
+    gap: 15px;
+  }
+  
+  .player-controls .volumeSlider {
+    width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .expanded-art {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .expanded-title {
+    font-size: 1em;
+  }
+  
+  .player-controls #playPauseBtn img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .player-controls .volumeSlider {
+    width: 100px;
+  }
 }
 
 /* --- Pomodoro Timer Styles --- */
@@ -216,7 +498,7 @@ nav a:hover {
 
 .settings-dropdown {
   position: fixed;
-  top: 80px;
+  top: 90px;
   right: 10px;
   z-index: 1000;
 }
@@ -246,7 +528,6 @@ background-color: var(--button-bg);
   top: 50px;
   right: 0;
   background-color: var(--primary-bg);
-  min-width: 280px;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px var(--shadow-color);
@@ -258,6 +539,14 @@ background-color: var(--button-bg);
 
 .setting-item {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-color); /* Dark gray background */
+  padding: 10px 15px;
+  border-radius: 8px;
+  width: 200px;
+  box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .setting-item label {
@@ -306,6 +595,7 @@ input[type="number"] {
 }
 
 .song-item {
+  font-family: 'MyCustomFont', sans-serif;
   background-color: var(--primary-bg);
   border-radius: 10px;
   overflow: hidden;
@@ -505,6 +795,21 @@ input[type="number"] {
   z-index: 1000;
 }
 
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('fonts/myfont.otf') format('opentype'),
+       url('fonts/myfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.title-bar-text {
+  font-family: 'MyCustomFont', sans-serif;
+  color: var(--text-color);
+  font-size: 0.8em;
+  margin-left: 15px;
+}
+
 .window-controls {
   display: flex;
   height: 100%;
@@ -521,6 +826,19 @@ input[type="number"] {
   transition: background-color 0.2s;
   cursor: pointer;
 }
+
+.window-control-maximize {
+  width: 46px;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 16px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  opacity: 0.2;
+}
+
 
 .window-control:hover {
   background-color: var(--hover-bg); /* Change background color on hover */

@@ -7,34 +7,48 @@
 <body>
 
     <div class="title-bar">
+        <div class="title-bar-text">FLOWZA</div>
         <div class="title-bar-drag-region"></div>
         <div class="window-controls">
             <button class="window-control minimize" onclick="window.electronAPI.minimize()">🗕</button>
-            <button class="window-control maximize" onclick="window.electronAPI.maximize()">🗖</button>
+            <button class="window-control-maximize" class="window-control maximize" onclick="window.electronAPI.maximize()">🗖</button>
             <button class="window-control close" onclick="window.electronAPI.close()">🗙</button>
         </div>
     </div>
 
     <nav>
-        <a href="#" data-page="home">Home</a>
-        <a href="#" data-page="library">Library</a>
-        <a href="#" data-page="pomodoro">Pomodoro</a>
-        <a class="settings-button" href="#" data-page="settings">Settings</a>
+        <a href="#" data-page="home" class="navi-link">
+            <img src="images/icons/home-icon.png" class="navi-thumbnail">
+        </a>
+        <a href="#" data-page="library" class="navi-link">
+            <img src="images/icons/library-icon.png" class="navi-thumbnail">
+        </a>
+        <a href="#" data-page="pomodoro" class="navi-link">
+            <img src="images/icons/timer-icon.png" class="navi-thumbnail">
+        </a>
+        <a href="#" data-page="settings" class="navi-link settings-bton">
+            <img src="images/icons/settings-icon.png" class="navi-thumbnail">
+        </a>
     </nav>
     
     <div id="content-container"></div>
     
     <div id="player-footer">
         <div class="now-playing">
-            <img id="now-playing-art" src="" alt="Current track" class="thumbnail">
+            <a href="#" data-page="playing" class="thumbnail-link">
+                <img id="now-playing-art" src="" alt="Current track" class="thumbnail">
+            </a>                        
             <div class="track-info">
                 <span id="now-playing-title">No track selected</span>
             </div>
         </div>
         <div class="controls">
-            <button id="playPauseBtn">Play</button>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
-        </div>
+            <button id="playPauseBtn">
+                <img src="play.png" id="playPauseIcon">
+            </button>
+            <input class="volumeSlider" type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+            <span id="volumePercentage" class="volume-percentage">100</span>
+        </div>        
     </div>
     
     <script src="app.js"></script>

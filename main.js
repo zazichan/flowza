@@ -11,7 +11,7 @@ let currentTheme = 'system';
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
-    height: 650,
+    height: 680,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -37,7 +37,6 @@ ipcMain.on('window-control', (event, action) => {
   const win = BrowserWindow.getFocusedWindow()
   if (win) {
       if (action === 'minimize') win.minimize()
-      if (action === 'maximize') win.isMaximized() ? win.unmaximize() : win.maximize()
       if (action === 'close') win.close()
   }
 })
