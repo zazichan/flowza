@@ -44,14 +44,17 @@ async function initializeTheme() {
     }
 }
 
+function handleThemeChange(e) {
+    const newTheme = e.target.value;
+    updateTheme(newTheme);
+    window.electronAPI.setTheme(newTheme);
+}
+
 function setupThemeListeners() {
     const themeSelect = document.getElementById('theme-select');
     if (themeSelect) {
-        themeSelect.addEventListener('change', (e) => {
-            const newTheme = e.target.value;
-            updateTheme(newTheme);
-            window.electronAPI.setTheme(newTheme);
-        });
+        themeSelect.removeEventListener('change', handleThemeChange);
+        themeSelect.addEventListener('change', handleThemeChange);
     }
 }
 
@@ -128,7 +131,10 @@ async function loadPage(page) {
         }
 
         // Existing setup for other pages
-        if (page === 'settings') { /* ... */ }
+        if (page === 'settings') {
+            await initializeTheme();
+            setupThemeListeners();
+        }
         if (page === 'pomodoro') setupPomodoroUI();
         if (page === 'library') setupLibrary();
         if (page === 'playing') setupPlayerControls();
